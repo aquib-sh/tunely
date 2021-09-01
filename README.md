@@ -8,7 +8,8 @@ during that day.
 > Theme name is predefined on the group during that day in a post.
 
 ### Theme format
-<day> theme:
+{day} theme:
 1) theme1_title
 2) theme2_title
-
+         
+         
