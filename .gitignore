@@ -6,6 +6,9 @@ __pycache__/
 # internal files
 internal/
 
+# tests
+test_*.py
+
 # C extensions
 *.so
 
