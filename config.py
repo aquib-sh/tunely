@@ -13,4 +13,4 @@ google_api_token_path     = os.path.join(data_dir, google_token_file)
 
 google_api_scope = ["https://www.googleapis.com/auth/youtube"]
 
-
+youtube_channel_id = 'UCKRYP6EAo0n6Notrq7w_2ZA'
