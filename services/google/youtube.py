@@ -99,6 +99,7 @@ class YouTubeCtl(GoogleServices):
             title: str, 
             description: str = None, 
             status: str = "public") -> dict:
+
         """Creates a new playlist on YouTube channel.
         
         Parameters
@@ -151,3 +152,37 @@ class YouTubeCtl(GoogleServices):
         return response
         
         
+    def add_video_to_playlist(self, playlist_id: str, video_id: str) -> dict:
+        """Adds a video to YouTube playlist.
+
+        Parameters
+        ----------
+        playlist_id: str
+            id of the playlist where video will be added.
+            playlist_id can be found in it's URL.
+
+        video_id: str
+            id of video to be added to playlist.
+            video_id can be found in it's URL.
+
+        Returns
+        -------
+        response: dict
+            returned response to the API request.
+
+        """
+        request = self.service.playlistItems().insert(
+            part="id,snippet,contentDetails",
+            body={
+                "snippet": {
+                    "playlistId": playlist_id,
+                    "resourceId": {
+                        "videoId": video_id,
+                        "kind": "youtube#video"
+                    }
+                }
+            }
+        )
+        response = request.execute() 
+        return response
+
