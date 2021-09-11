@@ -92,3 +92,62 @@ class YouTubeCtl(GoogleServices):
             titles.append(title)
 
         return titles
+        
+        
+    def create_playlist(
+            self, 
+            title: str, 
+            description: str = None, 
+            status: str = "public") -> dict:
+        """Creates a new playlist on YouTube channel.
+        
+        Parameters
+        ----------
+        title: str
+            title fo the new playlist to be created.
+
+        description: str (OPTIONAL, DEFAULT=None)
+            description of the playlist.
+
+        status: str (OPTIONAL, DEFAULT='public')
+            privacy setting of the playlist
+
+            if set to 'public' anyone can 
+            access the playlist and can be
+            showed in YouTube search results.
+
+            if set to 'private' only you can 
+            access the playlist.
+
+            if set to 'unlisted' anyone with a link
+            can access the playlist, but won't turn up
+            in search results.
+
+        Returns
+        -------
+        response: dict
+            response generated after the execution of request
+            
+        """
+        # Throw error if user entered wrong status 
+        accepted_status = ['public', 'private', 'unlisted']
+        if status not in accepted_status:
+            raise Exception("Invalid Status", 
+                f"status shoud be in {accepted_status}") 
+
+        request = self.service.playlists().insert(
+            part="id, snippet, status, contentDetails",
+            body={
+                "snippet": {
+                    "title": title,
+                    "description":description,
+                },
+                "status": {
+                    "privacyStatus": status
+                }
+           } 
+        )
+        response = request.execute()
+        return response
+        
+        
