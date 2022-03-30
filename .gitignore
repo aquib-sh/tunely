@@ -4,7 +4,10 @@ __pycache__/
 *$py.class
 
 # internal files
-internals/
+internal/
+
+# keys
+keys.json
 
 # tests
 test_*.py
