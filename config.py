@@ -1,6 +1,6 @@
 import os
 
-data_dir = os.path.join(os.getcwd(), "internals")
+data_dir = os.path.join(os.getcwd(), "internal")
 # ======================= CACHE FILE  =============================
 cache_file = "cache.json"
 cache_path = os.path.join(data_dir, cache_file)
