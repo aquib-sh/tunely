@@ -31,7 +31,7 @@ class ServiceManager:
     def add_to_playlist(self, playlist_id:str, link:str):
         video_id = self.__get_video_id(link)
         self.__youtube.add_video_to_playlist(playlist_id, video_id)
-        if self.log: print(f"[+] Added {link} to the playlist {playlist_id}")
+        if self.log: print(f"[+] ADDED {link} to the playlist {playlist_id}")
 
     def search_in_playlist(self, title) -> bool:
         playlists = self.__get_playlists()
@@ -39,11 +39,9 @@ class ServiceManager:
 
     def create_playlist(self, title) -> str:
         resp = self.__youtube.create_playlist(title)
-        if self.log: print(f"[+] Sucessfully CREATED {title} playlist")
+        if self.log: print(f"[+] CREATED {title} playlist")
         return resp['id']
 
     def delete_playlist(self, _id):
         self.__youtube.delete_playlist(playlist_id=_id)
-        if self.log: print(f"[+] Sucessfully DELETED {_id} playlist")
-
-
+        if self.log: print(f"[+] DELETED {_id} playlist")
