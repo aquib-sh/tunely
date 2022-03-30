@@ -3,6 +3,7 @@
 
 from services.google.google_services import GoogleServices
 
+
 class YouTubeCtl(GoogleServices):
     """ YouTube Controller Class
     
@@ -28,7 +29,7 @@ class YouTubeCtl(GoogleServices):
         super().__init__(token, scope)
 
 
-    def start_service(self, version: str):
+    def start_service(self, version="v3"):
         """Builds YouTube Data Service.
         
         Parameters
@@ -147,6 +148,26 @@ class YouTubeCtl(GoogleServices):
                     "privacyStatus": status
                 }
            } 
+        )
+        response = request.execute()
+        return response
+
+
+    def delete_playlist(self, playlist_id:str) -> dict:
+        """ Deletes a playlist based on the playlist id provided
+        
+        Parameters
+        ----------
+        playlist_id: str
+            ID of the playlist to delete.
+
+        Returns
+        -------
+        response: dict
+            response generated after the execution of request.
+        """
+        request = self.service.playlists().delete(
+            id = playlist_id
         )
         response = request.execute()
         return response
