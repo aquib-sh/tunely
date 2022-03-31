@@ -1,6 +1,10 @@
 import os
 
+# ======================= DATABASE FILE  =============================
 data_dir = os.path.join(os.getcwd(), "internal")
+db_file = "password_manager.db"
+db_path = os.path.join(data_dir, db_file)
+
 # ======================= CACHE FILE  =============================
 cache_file = "cache.json"
 cache_path = os.path.join(data_dir, cache_file)
