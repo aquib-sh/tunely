@@ -40,7 +40,6 @@ class FBGroup:
         with open(self.theme_records, "w") as fp:
             json.dump({title:themes}, fp)
 
-
     def previous_theme(self) -> tuple:
         """Returns the theme saved previously."""
         if not os.path.exists(self.theme_records): return (None, None)
@@ -52,12 +51,10 @@ class FBGroup:
             return (title.strip(), themes)
         return (None, None)
 
-
     def save_ytlink(self, link:str):
         """Writes the given YouTube video link to a JSON file."""
         with open(self.youtube_link_records, "w") as fp:
             json.dump({"youtube_link":link}, fp)
-
 
     def previous_ytlink(self) -> str:
         """Returns the YouTube video link saved previously."""
