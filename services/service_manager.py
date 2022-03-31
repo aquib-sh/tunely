@@ -1,5 +1,7 @@
 import config
 
+from services.browser import BotMaker
+from services.facebook.group import FBGroup
 from services.google.token import TokenRetriever
 from services.google.youtube import YouTubeCtl
 
@@ -14,6 +16,11 @@ class ServiceManager:
         )
         self.__youtube = YouTubeCtl(gtoken, config.google_api_scope)
         self.__youtube.start_service()
+        self.__browser = BotMaker(browser="Chrome", remote=True, port=8989)
+        self.__facebook = FBGroup(self.__browser, config.fb_group_link)
+
+    def get_fb(self):
+        return self.__facebook
 
     def __get_playlists(self):
         return self.__youtube.fetch_playlists_title(
