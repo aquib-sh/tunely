@@ -18,3 +18,5 @@ google_api_scope = [
 ]
 
 youtube_channel_id = 'UCKRYP6EAo0n6Notrq7w_2ZA'
+fb_group_link = "https://m.facebook.com/groups/923023231097937"
+fb_group_announc = "https://m.facebook.com/groups/923023231097937?view=announcements"
