@@ -33,7 +33,7 @@ class QueryGenerator:
         current_datetime = str(datetime.datetime.now())
         query = f"""INSERT INTO {self.__table} 
             (THEME_DAY, THEME1, THEME2, VIDEO_LINK, TIMESTAMP) 
-            VALUES (?, ?, ?, ?, ?, ?, ?);"""
+            VALUES (?, ?, ?, ?, ?);"""
         params = (
             theme_day,
             theme1,
@@ -44,7 +44,7 @@ class QueryGenerator:
         return (query, params)
 
     def get_video_links(self, theme_day:str, theme1:str, theme2:str) -> tuple:
-        query = f"""SELECT VIDEO_LINK FROM {self.__account_info_table} 
+        query = f"""SELECT VIDEO_LINK FROM {self.__table} 
         WHERE THEME_DAY=:theme_day
         AND THEME1=:theme1
         AND THEME2=:theme2;"""
@@ -75,3 +75,9 @@ class QueryExecutor:
         self.cursor.execute(query, params)
         fetched_links = self.cursor.fetchone()
         return (fetched_links != None)
+
+    def get_all_links_for_theme(self, query, params) -> list:
+        self.cursor.execute(query, params)
+        fetched_links = self.cursor.fetchall()
+        links = [row[-1] for row in fetched_links]
+        return links
