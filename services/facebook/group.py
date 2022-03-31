@@ -1,8 +1,10 @@
-import time
+import json
 import os
 import re
-import json
+import time
+
 from bs4 import BeautifulSoup
+
 
 class FBGroup:
     """Interacts with Facebook group.
@@ -65,27 +67,17 @@ class FBGroup:
         if len(data) > 0: return data['youtube_link'].strip()
         return None
 
-
     def get_todays_theme(self) -> tuple:
         soup = BeautifulSoup(self.bot.page_source(), "lxml")
-        pattern = r"([a-zA-z]*\s(?:T|t)hemes):\s*\d(?:\.|\))\s?([a-zA-z\s]*)\d(?:\.|\))\s?([a-zA-Z\s]*)"
+        pattern = r"([a-zA-Z]*\s(?:T|t)hemes):\s*\d(?:\.|\))\s?([a-zA-Z\s!]*)\d(?:\.|\))\s?([a-zA-Z\s]*)"
         latest_theme_info = soup.find("span", {"data-sigil":"more"}).text
         info = []
         themes = []
         title = ''
         match = re.search(pattern, latest_theme_info)
-
         if match == None:
             base = soup.find("span", {"data-sigil":"more"})
-            title = base.find("div")
-
-            if title == None:
-                title = base.find("p").text
-                title = title.split(":")[0].strip()
-            else:
-                title = title.find("div").text.strip(":").strip()
-
-            breakpoint()
+            title = base.find("div").find("div").text.strip(":").strip()
             themes = [theme.text.strip() for theme in base.find_all("li")]
         else:
             info = match.groups()
