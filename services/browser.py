@@ -5,17 +5,18 @@
 """
 
 import os
+import random
 import sys
 import time
-import random
+
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import TimeoutException
-from selenium.common.exceptions import StaleElementReferenceException
-from selenium.webdriver.common.proxy import Proxy, ProxyType
+from selenium.common.exceptions import (NoSuchElementException,
+                                        StaleElementReferenceException,
+                                        TimeoutException)
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.common.by import By 
+from selenium.webdriver.common.proxy import Proxy, ProxyType
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -163,8 +164,11 @@ class BotMaker:
 
         firefox_driver = os.path.join(dir_driver, "geckodriver")            
         edge_driver = os.path.join(dir_driver, "msedgedriver")
-        chrome_driver = os.path.join(dir_driver, "chromedriver")
-
+        chrome_driver = os.path.abspath(
+            os.path.join(
+                dir_driver, "chromedriver"
+            )
+        )
         bot_ops = BotOptions()
 
         self.driver = None
