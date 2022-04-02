@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import sys
 import time
 
 from bs4 import BeautifulSoup
@@ -66,21 +67,37 @@ class FBGroup:
 
     def get_todays_theme(self) -> tuple:
         soup = BeautifulSoup(self.bot.page_source(), "lxml")
-        pattern = r"([a-zA-Z]*\s(?:T|t)hemes):\s*\d(?:\.|\))\s?([a-zA-Z\s!]*)\d(?:\.|\))\s?([a-zA-Z\s]*)"
+        patterns = [
+            r"([a-zA-Z]*\s(?:T|t)hemes):\s*\d(?:\.|\))\s?([a-zA-Z\s!]*)\d(?:\.|\))\s?([a-zA-Z\s]*)",
+            r"([a-zA-Z]*\s)\s*\d(?:\.|\))\s?([a-zA-Z\s!]*)\d(?:\.|\))\s?([a-zA-Z\s]*)"
+        ]
         latest_theme_info = soup.find("span", {"data-sigil":"more"}).text
         info = []
         themes = []
         title = ''
-        match = re.search(pattern, latest_theme_info)
-        if match == None:
-            base = soup.find("span", {"data-sigil":"more"})
-            title = base.find("div").find("div").text.strip(":").strip()
-            themes = [theme.text.strip() for theme in base.find_all("li")]
-        else:
-            info = match.groups()
-            if info == None or len(info) < 2 : return (None, None)
-            title  = info[0]
-            themes = info[1:]
+
+        # Match with different patterns
+        i = 0
+        match = None
+        while (match == None and i < len(patterns)):
+            match = re.search(patterns[i], latest_theme_info)
+            i += 1
+
+        try:
+            if match == None:
+                base = soup.find("span", {"data-sigil":"more"})
+                title = base.find("div").find("div").text.strip(":").strip()
+                themes = [theme.text.strip() for theme in base.find_all("li")]
+            else:
+                info = match.groups()
+                if info == None or len(info) < 2 : return (None, None)
+                title  = info[0]
+                themes = info[1:]
+        except Exception as e:
+            print("[!] Pattern not found for", latest_theme_info)
+            print("[!] Exiting from program.")
+            sys.exit(1)
+
         print(title, themes)
         return (title, themes)
 
@@ -95,7 +112,6 @@ class FBGroup:
         soup = BeautifulSoup(self.bot.page_source(), 'lxml')
 
         youtube_video = soup.find("a", {"class":"touchable", "target":"_blank"})['href']
-
         self.bot.move(youtube_video)
         video_link = self.bot.driver.current_url
         self.bot.driver.back() # Now goback to group page.
