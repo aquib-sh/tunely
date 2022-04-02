@@ -25,7 +25,7 @@ class ServiceManager:
         return self.__facebook
 
     def __get_playlists(self):
-        return self.__youtube.fetch_playlists_title(
+        return self.__youtube.fetch_playlists(
             config.youtube_channel_id, max_results=50
         )
 
@@ -39,7 +39,11 @@ class ServiceManager:
 
     def new_link_posted(self):
         self.__facebook.goto_announc()
-        theme_day, theme1, theme2 = self.__facebook.get_todays_theme()
+        theme_day, themes = self.__facebook.get_todays_theme()
+        theme1 = themes[0]
+        theme2 = themes[1]
+        # load the grp page and get posted links
+        self.__facebook.load_page() 
         link = self.__facebook.get_latest_video_link() 
         exists = self.__db_manager.link_exists(theme_day, theme1, theme2, link)
         if exists:
@@ -47,14 +51,31 @@ class ServiceManager:
         else:
             return (True, (theme_day, theme1, theme2, link))
 
-    def add_to_playlist(self, playlist_id:str, link:str):
-        video_id = self.__get_video_id(link)
-        self.__youtube.add_video_to_playlist(playlist_id, video_id)
-        if self.log: print(f"[+] ADDED {link} to the playlist {playlist_id}")
+    def add_record_to_db(self, theme_day, theme1, theme2, link):
+        self.__db_manager.add_link(theme_day, theme1, theme2, link)
+        if self.log: print(f"[+] ADDED {link} to the DB")
 
-    def playlist_exists(self, title) -> bool:
+    def add_to_playlist(self, playlist_id:str, video_link:str):
+        video_id = self.__get_video_id(video_link)
+        if self.log: print(f"[*] Adding video with ID {video_id}")
+        self.__youtube.add_video_to_playlist(playlist_id, video_id)
+        if self.log: print(f"[+] ADDED {video_link} to the playlist {playlist_id}")
+
+    def playlist_exists(self, title) -> tuple:
+        """If Playlist exist then return True and playlist_id.
+
+        Returns
+        -------
+        :tuple
+            A tuple of 2 elements containing (Status, Playlist_id) 
+            if playlist exists then it will return (True, playlist_id)
+            if does not exists then it will contain (False, None)
+        """
         playlists = self.__get_playlists()
-        return (title in playlists)
+        for playlist_info in playlists:
+           if playlist_info[0] == title:
+               return (True, playlist_info[1])
+        return (False, None)
 
     def create_playlist(self, title) -> str:
         resp = self.__youtube.create_playlist(title)
