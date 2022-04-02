@@ -28,7 +28,6 @@ class YouTubeCtl(GoogleServices):
     def __init__(self, token, scope: list):
         super().__init__(token, scope)
 
-
     def start_service(self, version="v3"):
         """Builds YouTube Data Service.
         
@@ -39,8 +38,7 @@ class YouTubeCtl(GoogleServices):
         """
         super().start_service("youtube", version)
 
-
-    def fetch_playlists(self, channel_id: str, max_results: int) -> dict:
+    def fetch_playlists_data(self, channel_id: str, max_results: int) -> dict:
         """Returns the JSON data on the list of playlists
            for a channel. 
 
@@ -65,9 +63,8 @@ class YouTubeCtl(GoogleServices):
         response = request.execute()
 
         return response
-
     
-    def fetch_playlists_title(self, channel_id: str, max_results: int) -> list:
+    def fetch_playlists(self, channel_id: str, max_results: int) -> list:
         """Returns the list containing titles of playlists 
            for a particular YouTube channel.
 
@@ -84,16 +81,14 @@ class YouTubeCtl(GoogleServices):
             ( if set to 2 then 2 playlists data will return)
             (acceptable values are between 0 to 50)
         """
-        response = self.fetch_playlists(channel_id, max_results)
-        titles = []
+        response = self.fetch_playlists_data(channel_id, max_results)
+        playlists = []
         total_items = len(response['items'])
-
         for i in range(0, total_items):
             title = response['items'][i]['snippet']['title']
-            titles.append(title)
-
-        return titles
-        
+            pid = response['items'][i]['id']
+            playlists.append((title, pid))
+        return playlists
         
     def create_playlist(
             self, 
@@ -152,7 +147,6 @@ class YouTubeCtl(GoogleServices):
         response = request.execute()
         return response
 
-
     def delete_playlist(self, playlist_id:str) -> dict:
         """ Deletes a playlist based on the playlist id provided
         
@@ -171,7 +165,6 @@ class YouTubeCtl(GoogleServices):
         )
         response = request.execute()
         return response
-        
         
     def add_video_to_playlist(self, playlist_id: str, video_id: str) -> dict:
         """Adds a video to YouTube playlist.
@@ -206,4 +199,3 @@ class YouTubeCtl(GoogleServices):
         )
         response = request.execute() 
         return response
-
